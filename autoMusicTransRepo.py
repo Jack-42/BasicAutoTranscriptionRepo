@@ -14,14 +14,11 @@ from ipywidgets import VBox, Label
 
 ## Audio Imports
 import librosa, librosa.display           #https://librosa.github.io/librosa/index.html
-from midiutil import MIDIFile             #http://midiutil.readthedocs.io/en/1.2.1/
 from music21.tempo import MetronomeMark   #http://web.mit.edu/music21/
 from music21.note import Note, Rest
 from music21.stream import Stream
 from music21 import metadata
 from music21 import instrument
-from music21 import midi
-from music21.key import Key
 
 
 # Configurations
@@ -277,49 +274,6 @@ s.show('text')
 # Listen to music21 stream as MIDI
 s.show('midi')
 
-# Pygame play - Needs pygame to be installed
-#sp = midi.realtime.StreamPlayer(s)
-#sp.play()
-
 
 # Save MIdi to file
 s.write('midi', 'sweet_child_music21.mid')
-
-# Another way for saving midi
-#mf = midi.translate.streamToMidiFile(s)
-#mf.open('sweet_child_mine'+'.mid', 'wb')
-#mf.write()
-#mf.close()
-
-
-# If you have MuseScore installed, opens midi file in it
-#! "D:\ProgramFiles\MuseScore2\bin\MuseScore.exe" sweet_child_music21.mid
-
-
-# Get MIDI Information
-midi_info = list(music_info[:,1])
-
-
-# Save midi file from MIDI information using MIDIUtils - not using anything from music21,
-track    = 0
-channel  = 0
-tempo    = tempo  # In BPM
-volume   = 100  # 0-127, as per the MIDI standard
-
-gnr = MIDIFile(1)  # One track, defaults to format 1 (tempo track is created
-                      # automatically)
-gnr.addTrackName(0,0,"Guns n' Roses - Sweet Child O' Mine - Intro")
-program = 30 # Overdriven Guitar
-gnr.addProgramChange(track, channel, 0, program)
-gnr.addTempo(track, 0, tempo)
-
-note_time=0
-for i, note in enumerate(midi_info):
-    if note[0]==None:
-        note_time+=note[1]
-    else:
-        note_time+=note[1]
-        gnr.addNote(track, channel, note[0].astype('int'), note_time, note[1], note[2])
-
-with open("sweet_child_midiutils.mid", "wb") as output_file:
-    gnr.writeFile(output_file)
