@@ -36,9 +36,8 @@ pre_post_max = 6                         # Pre- and post- samples for peak picki
 cqt_threshold = -61                      # Threshold for CQT dB levels, all values below threshold are set to -120 dB
 
 
-# Load Audio
-# Loadinging audio file
-filename = '%sGuns N Roses-Sweet Child O Mine Intro.wav'
+# Load audio file
+filename = 'audio/music/Guns N Roses-Sweet Child O Mine Intro.wav'
 x, fs = librosa.load(filename, sr=None, mono=True, duration=12)
 # Audio data information
 print("x Shape=", x.shape)
