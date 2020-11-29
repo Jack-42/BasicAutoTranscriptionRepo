@@ -57,21 +57,7 @@ fft_freqs = librosa.fft_frequencies(sr=44100, n_fft=128)
 notes_freqs = 440*2**(np.arange(-57, (128-57))/12)
 
 
-# Plot CQT vs FFT
-plt.figure()
-plt.plot(cqt_freqs, 'bo', label='CQT')
-plt.plot(fft_freqs, 'rx', label= 'FFT')
-plt.plot(notes_freqs, 'g^', label = 'Notes')
-plt.title(" CQT vs FFT")
-plt.xlabel('Bin Number #')
-plt.ylabel('Frequency [Hz]')
-plt.legend();
-
-
-
-
-# CQT
-## Function
+# CQT Function
 def calc_cqt(x,fs=fs,hop_length=hop_length, n_bins=n_bins, mag_exp=mag_exp):
     C = librosa.cqt(x, sr=fs, hop_length=hop_length, fmin=None, n_bins=n_bins)
     C_mag = librosa.magphase(C)[0]**mag_exp
@@ -86,7 +72,7 @@ def cqt_thresholded(cqt,thres=cqt_threshold):
     return new_cqt
 
 
-# Onset Envelope from Cqt
+# Onset Envelope from CQT
 def calc_onset_env(cqt):
     return librosa.onset.onset_strength(S=cqt, sr=fs, aggregate=np.mean, hop_length=hop_length)
 
