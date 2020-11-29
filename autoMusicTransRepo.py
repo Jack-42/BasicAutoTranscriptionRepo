@@ -4,13 +4,7 @@
 import numpy as np
 
 ## Visualization
-import seaborn
 import matplotlib.pyplot as plt
-import IPython.display as ipd
-from ipywidgets import interactive_output #http://ipywidgets.readthedocs.io/en/latest/index.html
-from ipywidgets import IntSlider, FloatSlider, fixed, Checkbox
-from ipywidgets import VBox, Label
-
 
 ## Audio Imports
 import librosa, librosa.display           #https://librosa.github.io/librosa/index.html
@@ -25,8 +19,6 @@ from music21 import instrument
 
 ## Path
 path = './audio/music/'
-
-#%matplotlib notebook
 
 ## Matplotlib
 plt.rc("figure", figsize=(16, 8))
@@ -46,16 +38,12 @@ cqt_threshold = -61                      # Threshold for CQT dB levels, all valu
 
 # Load Audio
 # Loadinging audio file
-filename = '%sGuns N Roses-Sweet Child O Mine Intro.wav'%path
+filename = '%sGuns N Roses-Sweet Child O Mine Intro.wav'
 x, fs = librosa.load(filename, sr=None, mono=True, duration=12)
 # Audio data information
 print("x Shape=", x.shape)
 print("Sample rate fs=", fs)
 print("Audio Length in seconds=%d [s]" % (x.shape[0]/fs))
-# Playback audio file
-ipd.Audio(x, rate=fs)
-
-
 
 
 # CQT vs FFT
@@ -118,25 +106,9 @@ def calc_onset(cqt, pre_post_max=pre_post_max, backtrack=True):
     return [onset_times, onset_boundaries, onset_env]
 
 
-# Fine Tuning UI
-style = {'description_width': 'initial'}
-mag_exp_slider=IntSlider(value=mag_exp, min=1, max=32, step=1,
-                         description='mag_exp:',continuous_update=False)
-
-thres_slider=IntSlider(value=cqt_threshold, min=-120, max=0, step=1,
-                                                     description='Threshold:',continuous_update=False)
-
-pre_post_slider=IntSlider(value=pre_post_max, min=1, max=32, step=1,
-                         description='Pre_post_max:',continuous_update=False, style=style)
-
-backtrack_box=Checkbox(value=False,description='backtrack',disabled=False)
-
-
+# Fine Tuning
+# without UI because jupyter widgets not available
 def inter_cqt_tuning(mag_exp,thres,pre_post_max, backtrack):
-    thres=thres_slider.value
-    mag_exp=mag_exp_slider.value
-    pre_post_max=pre_post_slider.value
-    backtrack=backtrack_box.value
     global CdB
     CdB = calc_cqt(x,fs,hop_length, n_bins, mag_exp)
     plt.figure()
@@ -151,11 +123,12 @@ def inter_cqt_tuning(mag_exp,thres,pre_post_max, backtrack):
     plt.show()
 
 
-# Display UI
-out = interactive_output(inter_cqt_tuning,  {'mag_exp': mag_exp_slider, 'thres': thres_slider,
-                                             'pre_post_max': pre_post_slider, 'backtrack':backtrack_box})
-ui = VBox([mag_exp_slider, thres_slider, pre_post_slider, backtrack_box])
-# display(ui, out) # TODO display() not available, why?
+mag_exp = 4
+threshold = -61
+pre_post_max = 6
+backtrack = False
+
+inter_cqt_tuning(mag_exp, threshold, pre_post_max, backtrack)
 
 
 # Estimate Tempo
