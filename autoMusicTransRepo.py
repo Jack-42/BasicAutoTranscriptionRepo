@@ -121,19 +121,15 @@ def remap(x, in_min, in_max, out_min, out_max):
     return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min
 
 
-# Generate Sinewave, MIDI Notes and music21 notes
-def generate_sine_midi_note(f0_info, sr, n_duration, round_to_sixtenth=True):
+# Generate Sinewave and music21 notes
+def generate_sine_midi_note(f0_info, sr, n_duration):
     f0 = f0_info[0]
     A = remap(f0_info[1], CdB.min(), CdB.max(), 0, 1)
     duration = librosa.frames_to_time(n_duration, sr=fs, hop_length=hop_length)
-    # Generate Midi Note and music21 note
+    # Generate music21 note
     note_duration = 0.02 * np.around(duration / 2 / 0.02)  # Round to 2 decimal places for music21 compatibility
-    midi_duration = time_to_beat(duration, tempo)
     midi_velocity = int(round(remap(f0_info[1], CdB.min(), CdB.max(), 0, 127)))
-    if round_to_sixtenth:
-        midi_duration = round(midi_duration * 16) / 16
     if f0 == None:
-        midi_note = None
         note_info = Rest(type=mm.secondsToDuration(note_duration).type)
         f0 = 0
     else:
@@ -141,15 +137,14 @@ def generate_sine_midi_note(f0_info, sr, n_duration, round_to_sixtenth=True):
         note = Note(midi_note, type=mm.secondsToDuration(note_duration).type)
         note.volume.velocity = midi_velocity
         note_info = [note]
-    midi_info = [midi_note, midi_duration, midi_velocity]
 
     # Generate Sinewave
     n = np.arange(librosa.frames_to_samples(n_duration, hop_length=hop_length))
     sine_wave = A * np.sin(2 * np.pi * f0 * n / float(sr))
-    return [sine_wave, midi_info, note_info]
+    return [sine_wave, note_info]
 
 
-#Estimate Pitch
+# Estimate Pitch
 def estimate_pitch(segment, threshold):
     freqs = librosa.cqt_frequencies(n_bins=n_bins, fmin=librosa.note_to_hz('C1'),
                             bins_per_octave=12)
@@ -168,7 +163,7 @@ def estimate_pitch_and_notes(x, onset_boundaries, i, sr):
     return generate_sine_midi_note(f0_info, sr, n1-n0)
 
 
-# Array of music information - Sinewave, MIDI Notes and muisc21 Notes
+# Array of music information - Sinewave and music21 notes
 music_info = np.array([
     estimate_pitch_and_notes(CdB, onsets[1], i, sr=fs)
     for i in range(len(onsets[1])-1)
@@ -193,8 +188,7 @@ file.close()
 
 
 # Get music21 notes
-note_info = list(music_info[:,2])
-
+note_info = list(music_info[:,1])
 
 # Create music21 stream
 s = Stream()
@@ -208,7 +202,6 @@ s.metadata.title = "Sweet Child O' Mine - Introduction"
 s.metadata.composer = "Guns n' Roses"
 for note in note_info:
     s.append(note)
-
 
 # Analyse music21 stream to get song Key
 key=s.analyze('key')
