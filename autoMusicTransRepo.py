@@ -13,6 +13,7 @@ from music21.note import Note, Rest
 from music21.stream import Stream
 from music21 import metadata
 from music21 import instrument
+import wave
 
 
 # Configurations
@@ -179,9 +180,13 @@ music_info = np.array([
 # Get sinewave
 synth_audio=np.concatenate(music_info[:,0])
 
-
-# Play generatade sinewave
-ipd.Audio(synth_audio, rate=fs)
+# write to wav file
+file = wave.open("sweet_child_sine.wav", "wb")
+file.setnchannels(1)
+file.setsampwidth(4)    # 4 bytes is default used by librosa
+file.setframerate(fs)
+file.writeframes(b"".join(synth_audio))
+file.close()
 
 
 # Get muisc21 notes
