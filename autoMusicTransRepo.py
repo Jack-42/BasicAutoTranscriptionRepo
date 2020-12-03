@@ -175,7 +175,7 @@ def estimate_pitch_and_notes(x, onset_boundaries, i, sr):
 music_info = np.array([
     estimate_pitch_and_notes(CdB, onsets[1], i, sr=fs)
     for i in range(len(onsets[1])-1)
-])
+], dtype=object)
 
 
 # Get sinewave
