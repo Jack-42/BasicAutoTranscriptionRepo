@@ -110,6 +110,7 @@ tempo, beats=librosa.beat.beat_track(y=None, sr=fs, onset_envelope=onsets[2], ho
                start_bpm=120.0, tightness=100, trim=True, bpm=None,
                units='frames')
 tempo=int(2*round(tempo/2))
+print("BPM: {}".format(tempo))
 mm = MetronomeMark(referent='quarter', number=tempo)
 
 
@@ -189,7 +190,7 @@ file.writeframes(b"".join(synth_audio))
 file.close()
 
 
-# Get muisc21 notes
+# Get music21 notes
 note_info = list(music_info[:,2])
 
 
@@ -209,22 +210,9 @@ for note in note_info:
 
 # Analyse music21 stream to get song Key
 key=s.analyze('key')
-print(key.name)
+print("Key: " + key.name)
 # Insert Key to Stream
 s.insert(0, key)
 
-
-# Display music21 stream
-# If you have Musescore installed and configured displays music score - https://musescore.org/en
-#s.show() # You must have Nusescore installed and Configured to run this and display the music score
-
-# Show stream as text
-s.show('text')
-
-
-# Listen to music21 stream as MIDI
-s.show('midi')
-
-
-# Save MIdi to file
+# Save MIDI to file
 s.write('midi', 'sweet_child_music21.mid')
