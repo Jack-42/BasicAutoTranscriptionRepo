@@ -19,7 +19,7 @@ import wave
 # Configurations
 
 ## Matplotlib
-plt.rc("figure", figsize=(16, 8))
+plt.rc("figure", figsize=(10, 5))
 
 
 # Parameters
