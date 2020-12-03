@@ -181,12 +181,17 @@ music_info = np.array([
 # Get sinewave
 synth_audio=np.concatenate(music_info[:,0])
 
+# Convert audio to 16-bit int, generated audio is 64-bit float
+synth_audio_converted = np.array([
+    sample * 32767 for sample in synth_audio
+], dtype=np.int16)
+
 # write to wav file
 file = wave.open("sweet_child_sine.wav", "wb")
 file.setnchannels(1)
-file.setsampwidth(4)    # 4 bytes is default used by librosa
+file.setsampwidth(2)    # 2 bytes = 16 bit
 file.setframerate(fs)
-file.writeframes(b"".join(synth_audio))
+file.writeframes(synth_audio_converted)
 file.close()
 
 
