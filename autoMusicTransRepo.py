@@ -139,7 +139,7 @@ def generate_sine_midi_note(f0_info, sr, n_duration, round_to_sixtenth=True):
         f0 = 0
     else:
         midi_note = round(librosa.hz_to_midi(f0))
-        note = Note(librosa.midi_to_note(midi_note), type=mm.secondsToDuration(note_duration).type)
+        note = Note(midi_note, type=mm.secondsToDuration(note_duration).type)
         note.volume.velocity = midi_velocity
         note_info = [note]
     midi_info = [midi_note, midi_duration, midi_velocity]
