@@ -18,9 +18,6 @@ import wave
 
 # Configurations
 
-## Path
-path = './audio/music/'
-
 ## Matplotlib
 plt.rc("figure", figsize=(16, 8))
 
@@ -187,7 +184,7 @@ synth_audio_converted = np.array([
 ], dtype=np.int16)
 
 # write to wav file
-file = wave.open("sweet_child_sine.wav", "wb")
+file = wave.open("output/sweet_child_sine.wav", "wb")
 file.setnchannels(1)
 file.setsampwidth(2)    # 2 bytes = 16 bit
 file.setframerate(fs)
@@ -220,4 +217,4 @@ print("Key: " + key.name)
 s.insert(0, key)
 
 # Save MIDI to file
-s.write('midi', 'sweet_child_music21.mid')
+s.write('midi', 'output/sweet_child_music21.mid')
