@@ -45,18 +45,6 @@ print("Sample rate fs=", fs)
 print("Audio Length in seconds=%d [s]" % (x.shape[0]/fs))
 
 
-# CQT vs FFT
-
-# CQT Frequencies
-cqt_freqs = librosa.core.cqt_frequencies(n_bins=128, fmin=librosa.note_to_hz('C0'), bins_per_octave=12)
-
-# FFT Frequencies
-fft_freqs = librosa.fft_frequencies(sr=44100, n_fft=128)
-
-# Notes Center Frequencies
-notes_freqs = 440*2**(np.arange(-57, (128-57))/12)
-
-
 # CQT Function
 def calc_cqt(x,fs=fs,hop_length=hop_length, n_bins=n_bins, mag_exp=mag_exp):
     C = librosa.cqt(x, sr=fs, hop_length=hop_length, fmin=None, n_bins=n_bins)
