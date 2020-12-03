@@ -33,10 +33,10 @@ mag_exp = 4                              # Magnitude Exponent
 pre_post_max = 6                         # Pre- and post- samples for peak picking
 cqt_threshold = -61                      # Threshold for CQT dB levels, all values below threshold are set to -120 dB
 
+filename = "sweet_child_o_mine_intro"
 
 # Load audio file
-filename = 'audio/music/Guns N Roses-Sweet Child O Mine Intro.wav'
-x, fs = librosa.load(filename, sr=None, mono=True, duration=12)
+x, fs = librosa.load("input/" + filename + ".wav", sr=None, mono=True, duration=12)
 # Audio data information
 print("x Shape=", x.shape)
 print("Sample rate fs=", fs)
@@ -184,7 +184,7 @@ synth_audio_converted = np.array([
 ], dtype=np.int16)
 
 # write to wav file
-file = wave.open("output/sweet_child_sine.wav", "wb")
+file = wave.open("output/" + filename + "_sine.wav", "wb")
 file.setnchannels(1)
 file.setsampwidth(2)    # 2 bytes = 16 bit
 file.setframerate(fs)
@@ -217,4 +217,4 @@ print("Key: " + key.name)
 s.insert(0, key)
 
 # Save MIDI to file
-s.write('midi', 'output/sweet_child_music21.mid')
+s.write('midi', "output/" + filename + "_music21.mid")
