@@ -35,7 +35,7 @@ pre_post_max = 6                         # Pre- and post- samples for peak picki
 cqt_threshold = -60                      # Threshold for CQT dB levels, all values below threshold are set to -120 dB
 backtrack = False
 
-filename = "high_hopes"
+filename = "sweet_child_o_mine_intro"
 
 # Load audio file
 x, fs = librosa.load("input/" + filename + ".wav", sr=None, mono=True)
