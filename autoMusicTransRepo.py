@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 
 ## Audio Imports
 import librosa, librosa.display           #https://librosa.github.io/librosa/index.html
+from music21.duration import DurationException
 from music21.tempo import MetronomeMark   #http://web.mit.edu/music21/
 from music21.note import Note, Rest
 from music21.stream import Stream
@@ -33,10 +34,10 @@ mag_exp = 4                              # Magnitude Exponent
 pre_post_max = 6                         # Pre- and post- samples for peak picking
 cqt_threshold = -61                      # Threshold for CQT dB levels, all values below threshold are set to -120 dB
 
-filename = "sweet_child_o_mine_intro"
+filename = "high_hopes"
 
 # Load audio file
-x, fs = librosa.load("input/" + filename + ".wav", sr=None, mono=True, duration=12)
+x, fs = librosa.load("input/" + filename + ".wav", sr=None, mono=True)
 # Audio data information
 print("x Shape=", x.shape)
 print("Sample rate fs=", fs)
@@ -89,7 +90,7 @@ def inter_cqt_tuning(mag_exp,thres,pre_post_max, backtrack):
     global onsets
     onsets=calc_onset(new_cqt,pre_post_max, backtrack)
     plt.vlines(onsets[0], 0, fs/2, color='k', alpha=0.8)
-    plt.title("CQT - Sweet Child O' Mine Intro")
+    plt.title("CQT - " + filename)
     plt.colorbar()
     plt.show()
 
@@ -130,13 +131,22 @@ def generate_sine_midi_note(f0_info, sr, n_duration):
     note_duration = 0.02 * np.around(duration / 2 / 0.02)  # Round to 2 decimal places for music21 compatibility
     midi_velocity = int(round(remap(f0_info[1], CdB.min(), CdB.max(), 0, 127)))
     if f0 == None:
-        note_info = Rest(type=mm.secondsToDuration(note_duration).type)
+        try:
+            note_info = Rest(type=mm.secondsToDuration(note_duration).type)
+        except DurationException:
+            note_info = None
         f0 = 0
     else:
         midi_note = round(librosa.hz_to_midi(f0))
-        note = Note(midi_note, type=mm.secondsToDuration(note_duration).type)
-        note.volume.velocity = midi_velocity
-        note_info = [note]
+        try:
+            note = Note(midi_note, type=mm.secondsToDuration(note_duration).type)
+            note.volume.velocity = midi_velocity
+            note_info = [note]
+        except DurationException:
+            note_info = None
+
+    if note_info is None:
+        return None
 
     # Generate Sinewave
     n = np.arange(librosa.frames_to_samples(n_duration, hop_length=hop_length))
@@ -169,6 +179,7 @@ music_info = np.array([
     for i in range(len(onsets[1])-1)
 ], dtype=object)
 
+music_info = np.array([info for info in music_info if info is not None], dtype=object)
 
 # Get sinewave
 synth_audio=np.concatenate(music_info[:,0])
@@ -198,8 +209,6 @@ electricguitar.midiChannel=0
 electricguitar.midiProgram=30  #Set program to Overdriven Guitar
 s.append(electricguitar)
 s.insert(0, metadata.Metadata())
-s.metadata.title = "Sweet Child O' Mine - Introduction"
-s.metadata.composer = "Guns n' Roses"
 for note in note_info:
     s.append(note)
 
