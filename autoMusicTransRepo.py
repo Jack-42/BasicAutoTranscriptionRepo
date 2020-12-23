@@ -32,7 +32,8 @@ hop_length = int(nfft*(1-overlap))       # Number of samples between successive 
 n_bins = 72                              # Number of frequency bins
 mag_exp = 4                              # Magnitude Exponent
 pre_post_max = 6                         # Pre- and post- samples for peak picking
-cqt_threshold = -61                      # Threshold for CQT dB levels, all values below threshold are set to -120 dB
+cqt_threshold = -60                      # Threshold for CQT dB levels, all values below threshold are set to -120 dB
+backtrack = False
 
 filename = "high_hopes"
 
@@ -94,13 +95,7 @@ def inter_cqt_tuning(mag_exp,thres,pre_post_max, backtrack):
     plt.colorbar()
     plt.show()
 
-
-mag_exp = 4
-threshold = -61
-pre_post_max = 6
-backtrack = False
-
-inter_cqt_tuning(mag_exp, threshold, pre_post_max, backtrack)
+inter_cqt_tuning(mag_exp, cqt_threshold, pre_post_max, backtrack)
 
 
 # Estimate Tempo
